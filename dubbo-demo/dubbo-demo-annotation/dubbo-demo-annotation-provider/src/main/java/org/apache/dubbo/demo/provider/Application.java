@@ -25,16 +25,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 public class Application {
+    
     public static void main(String[] args) throws Exception {
+        //使用AnnotationConfigApplicationContext初始化spring容器
+        //从ProviderConfiguration.class中加载spring配置
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ProviderConfiguration.class);
+        //启动spring容器
         context.start();
+        //阻塞main线程
         System.in.read();
     }
 
     @Configuration
+    //使用@EnableDubbo注解开启基于注解的dubbo功能，@EnableDubbo注解指定包下的Bean都会被扫描，并做Dubbo服务暴露出去
     @EnableDubbo(scanBasePackages = "org.apache.dubbo.demo.provider")
+    //使用@PropertySource注解加载properties文件
     @PropertySource("classpath:/spring/dubbo-provider.properties")
     static class ProviderConfiguration {
+        //使用@Bean注解初始化RegistryConfig对象
+        //相当于dubbo-provider.xml中的<dubbo:registry address="zookeeper://127.0.0.1:2181" />
         @Bean
         public RegistryConfig registryConfig() {
             RegistryConfig registryConfig = new RegistryConfig();

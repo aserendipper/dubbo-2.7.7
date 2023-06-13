@@ -23,13 +23,13 @@
 
     <dubbo:application metadata-type="remote" name="demo-provider"/>
     <dubbo:metadata-report address="zookeeper://127.0.0.1:2181"/>
-
+    <!-- Zookeeper 地址 -->
     <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
-
+    <!-- 协议 -->
     <dubbo:protocol name="dubbo"/>
-
+    <!-- 配置为spring bean -->
     <bean id="demoService" class="org.apache.dubbo.demo.provider.DemoServiceImpl"/>
-
+    <!-- 作为dubbo服务暴露出去 -->
     <dubbo:service interface="org.apache.dubbo.demo.DemoService" ref="demoService"/>
 
 </beans>

@@ -22,9 +22,9 @@
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
 
     <dubbo:application name="demo-consumer"/>
-
+    <!-- Zookeeper 地址 -->
     <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
-
+    <!--引入DemoService服务，并配置成Spring Bean-->
     <dubbo:reference id="demoService" check="false" interface="org.apache.dubbo.demo.DemoService"/>
 
 </beans>

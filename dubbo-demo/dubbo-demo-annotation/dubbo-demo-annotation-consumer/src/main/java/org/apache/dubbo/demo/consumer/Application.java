@@ -31,16 +31,22 @@ public class Application {
      * launch the application
      */
     public static void main(String[] args) {
+        //使用注解的方式启动，加载ConsumerConfiguration配置类
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConsumerConfiguration.class);
         context.start();
+        //获取DemoServiceComponent实例
         DemoService service = context.getBean("demoServiceComponent", DemoServiceComponent.class);
         String hello = service.sayHello("world");
         System.out.println("result :" + hello);
     }
 
+    //静态内部类，用于加载配置类
     @Configuration
+    //启用Dubbo注解
     @EnableDubbo(scanBasePackages = "org.apache.dubbo.demo.consumer.comp")
+    //加载配置文件
     @PropertySource("classpath:/spring/dubbo-consumer.properties")
+    //扫描dubbo-demo-consumer-comp包下的组件
     @ComponentScan(value = {"org.apache.dubbo.demo.consumer.comp"})
     static class ConsumerConfiguration {
 
