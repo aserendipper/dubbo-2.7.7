@@ -29,6 +29,8 @@ import java.lang.annotation.Target;
  *
  * @see ExtensionLoader
  * @see URL
+ * 
+ * Adaptive注解用来实现dubbo的适配器功能
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

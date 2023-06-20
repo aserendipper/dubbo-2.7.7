@@ -24,6 +24,9 @@ import static org.apache.dubbo.common.utils.StringUtils.EMPTY_STRING;
 import static org.apache.dubbo.common.utils.StringUtils.decodeHexByte;
 import static org.apache.dubbo.common.utils.Utf8Utils.decodeUtf8;
 
+/**
+ * 将URL字符串解析成对象
+ */
 public final class URLStrParser {
 
     private static final char SPACE = 0x20;

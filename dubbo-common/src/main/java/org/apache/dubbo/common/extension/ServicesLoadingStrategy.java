@@ -25,6 +25,7 @@ public class ServicesLoadingStrategy implements LoadingStrategy {
 
     @Override
     public String directory() {
+        //该目录下的spi配置文件用来兼容JDK SPI
         return "META-INF/services/";
     }
 

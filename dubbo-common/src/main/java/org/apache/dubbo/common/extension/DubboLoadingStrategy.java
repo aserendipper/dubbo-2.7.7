@@ -25,6 +25,7 @@ public class DubboLoadingStrategy implements LoadingStrategy {
 
     @Override
     public String directory() {
+        //该目录用于存放用户自定义spi扩展点配置文件
         return "META-INF/dubbo/";
     }
 
