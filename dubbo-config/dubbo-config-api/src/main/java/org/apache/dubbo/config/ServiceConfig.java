@@ -180,7 +180,11 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         dispatch(new ServiceConfigUnexportedEvent(this));
     }
 
+    /**
+     * 暴露服务
+     */
     public synchronized void export() {
+        // 不暴露服务
         if (!shouldExport()) {
             return;
         }
@@ -199,7 +203,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         serviceMetadata.setServiceType(getInterfaceClass());
         serviceMetadata.setServiceInterfaceName(getInterface());
         serviceMetadata.setTarget(getRef());
-
+        // 延迟暴露
         if (shouldDelay()) {
             DELAY_EXPORT_EXECUTOR.schedule(this::doExport, getDelay(), TimeUnit.MILLISECONDS);
         } else {
@@ -233,23 +237,29 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         if (StringUtils.isEmpty(interfaceName)) {
             throw new IllegalStateException("<dubbo:service interface=\"\" /> interface not allow null!");
         }
-
+        // 泛化接口的实现
         if (ref instanceof GenericService) {
             interfaceClass = GenericService.class;
             if (StringUtils.isEmpty(generic)) {
                 generic = Boolean.TRUE.toString();
             }
         } else {
+            // 普通接口的实现
             try {
+                // 根据interfaceName获取接口类
                 interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()
                         .getContextClassLoader());
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
+            // 校验接口和方法
             checkInterfaceAndMethods(interfaceClass, getMethods());
+            // 校验指向的 service 类
             checkRef();
+            // 标记 generic 为非泛化实现
             generic = Boolean.FALSE.toString();
         }
+        // 处理服务接口客户端本地代理("local")相关，实际已经废弃
         if (local != null) {
             if ("true".equals(local)) {
                 local = interfaceName + "Local";
@@ -264,6 +274,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                 throw new IllegalStateException("The local implementation class " + localClass.getName() + " not implement interface " + interfaceName);
             }
         }
+        // 处理服务接口客户端本地代理("stub")相关
         if (stub != null) {
             if ("true".equals(stub)) {
                 stub = interfaceName + "Stub";
@@ -286,6 +297,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
 
 
     protected synchronized void doExport() {
+        // 检查是否可以暴露服务，若可以，标记为已经暴露
         if (unexported) {
             throw new IllegalStateException("The service " + interfaceClass.getName() + " has already unexported!");
         }
@@ -327,15 +339,18 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
     }
 
     private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
+        // 获取协议名，默认为 dubbo
         String name = protocolConfig.getName();
         if (StringUtils.isEmpty(name)) {
             name = DUBBO;
         }
 
         Map<String, String> map = new HashMap<String, String>();
+        // 将side、dubbo、timestamp、pid等信息添加到map中
         map.put(SIDE_KEY, PROVIDER_SIDE);
 
         ServiceConfig.appendRuntimeParameters(map);
+        // 将各种配置对象添加到map中
         AbstractConfig.appendParameters(map, getMetrics());
         AbstractConfig.appendParameters(map, getApplication());
         AbstractConfig.appendParameters(map, getModule());
