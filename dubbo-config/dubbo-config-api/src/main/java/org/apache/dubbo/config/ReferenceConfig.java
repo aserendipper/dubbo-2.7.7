@@ -151,9 +151,11 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
     }
 
     public synchronized T get() {
+        // 是否已销毁
         if (destroyed) {
             throw new IllegalStateException("The invoker of ReferenceConfig(" + url + ") has already destroyed!");
         }
+        // 是否已初始化
         if (ref == null) {
             init();
         }
@@ -181,6 +183,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
     }
 
     public synchronized void init() {
+        // 已经初始化，直接返回
         if (initialized) {
             return;
         }
@@ -191,8 +194,9 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         }
 
         checkAndUpdateSubConfigs();
-
+        // 校验 stub 和本地存根
         checkStubAndLocal(interfaceClass);
+        // 校验 mock 相关配置
         ConfigValidationUtils.checkMock(interfaceClass, this);
 
         Map<String, String> map = new HashMap<String, String>();
@@ -214,6 +218,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
         }
         map.put(INTERFACE_KEY, interfaceName);
+        // 将各种配置添加到map集合中
         AbstractConfig.appendParameters(map, getMetrics());
         AbstractConfig.appendParameters(map, getApplication());
         AbstractConfig.appendParameters(map, getModule());
@@ -226,6 +231,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             map.putIfAbsent(METADATA_KEY, REMOTE_METADATA_STORAGE_TYPE);
         }
         Map<String, AsyncMethodInfo> attributes = null;
+        // 将 MethodConfig 对象数组，添加到 map 集合中
         if (CollectionUtils.isNotEmpty(getMethods())) {
             attributes = new HashMap<>();
             for (MethodConfig methodConfig : getMethods()) {
@@ -244,7 +250,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 }
             }
         }
-
+        // 以系统环境变量(DUBBO_IP_TO_REGISTRY)作为服务注册地址
         String hostToRegistry = ConfigUtils.getSystemProperty(DUBBO_IP_TO_REGISTRY);
         if (StringUtils.isEmpty(hostToRegistry)) {
             hostToRegistry = NetUtils.getLocalHost();
@@ -371,6 +377,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
      * Check each config modules are created properly and override their properties if necessary.
      */
     public void checkAndUpdateSubConfigs() {
+        // 校验接口名非空
         if (StringUtils.isEmpty(interfaceName)) {
             throw new IllegalStateException("<dubbo:reference interface=\"\" /> interface not allow null!");
         }
@@ -381,20 +388,25 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
         }
         // get consumer's global configuration
+        // 拼接属性配置(环境变量 + properties属性) 到 ConsumerConfig 对象
         checkDefault();
         this.refresh();
+        // 若未设置 generic 属性，使用 ConsumerConfig 的 generic 属性
         if (getGeneric() == null && getConsumer() != null) {
             setGeneric(getConsumer().getGeneric());
         }
+        // 泛化接口的实现
         if (ProtocolUtils.isGeneric(generic)) {
             interfaceClass = GenericService.class;
         } else {
+            // 普通接口的实现
             try {
                 interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()
                         .getContextClassLoader());
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
+            // 校验接口和方法
             checkInterfaceAndMethods(interfaceClass, getMethods());
         }
 
