@@ -21,6 +21,7 @@ import org.apache.dubbo.common.utils.StringUtils;
 /**
  * The service consumer default configuration
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-consumer/">...</a>
  * @export
  */
 public class ConsumerConfig extends AbstractReferenceConfig {

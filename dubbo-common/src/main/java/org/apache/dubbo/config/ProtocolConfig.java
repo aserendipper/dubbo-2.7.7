@@ -28,6 +28,7 @@ import static org.apache.dubbo.config.Constants.PROTOCOLS_SUFFIX;
 /**
  * ProtocolConfig
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-protocol/">...</a>
  * @export
  */
 public class ProtocolConfig extends AbstractConfig {

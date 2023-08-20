@@ -107,6 +107,10 @@ class URL implements Serializable {
 
     private final String path;
 
+    /**
+     * 参数集合，其中key为参数名，value为参数值
+     * 该属性通过AbstractConfig的appendParameters方法进行赋值
+     */
     private final Map<String, String> parameters;
 
     private final Map<String, Map<String, String>> methodParameters;

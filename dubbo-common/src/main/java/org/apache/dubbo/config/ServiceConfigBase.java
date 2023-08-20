@@ -208,6 +208,9 @@ public abstract class ServiceConfigBase<T> extends AbstractServiceConfig {
         convertProtocolIdsToProtocols();
     }
 
+    /**
+     * 从ProviderConfig对象中，读取配置
+     */
     public void completeCompoundConfigs() {
         super.completeCompoundConfigs(provider);
         if (provider != null) {

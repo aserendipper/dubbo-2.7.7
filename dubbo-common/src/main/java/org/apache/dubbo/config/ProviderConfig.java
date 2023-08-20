@@ -24,6 +24,7 @@ import java.util.Arrays;
 /**
  * The service provider default configuration
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-provider/">...</a>
  * @export
  * @see org.apache.dubbo.config.ProtocolConfig
  * @see ServiceConfigBase

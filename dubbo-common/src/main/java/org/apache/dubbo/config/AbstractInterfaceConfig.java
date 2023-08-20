@@ -176,6 +176,8 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
 
     /**
      * Check whether the registry config is exists, and then conversion it to {@link RegistryConfig}
+     * 
+     * 校验RegistryConfig配置。该方法会初始化RegistryConfig的配置属性。
      */
     public void checkRegistry() {
         convertRegistryIdsToRegistries();
@@ -310,6 +312,9 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
 
     }
 
+    /**
+     * 从consumerConfig中获取application、module、registries、monitor
+     */ 
     public void completeCompoundConfigs(AbstractInterfaceConfig interfaceConfig) {
         if (interfaceConfig != null) {
             if (application == null) {

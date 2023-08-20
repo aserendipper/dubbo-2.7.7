@@ -30,6 +30,7 @@ import static org.apache.dubbo.config.Constants.REGISTRIES_SUFFIX;
 /**
  * RegistryConfig
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-registry/">...</a>
  * @export
  */
 public class RegistryConfig extends AbstractConfig {

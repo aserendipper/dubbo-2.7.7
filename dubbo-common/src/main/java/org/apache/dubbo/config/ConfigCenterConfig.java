@@ -37,6 +37,8 @@ import static org.apache.dubbo.config.Constants.ZOOKEEPER_PROTOCOL;
 
 /**
  * ConfigCenterConfig
+ * 
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-config-center/">...</a>
  */
 public class ConfigCenterConfig extends AbstractConfig {
     private AtomicBoolean inited = new AtomicBoolean(false);

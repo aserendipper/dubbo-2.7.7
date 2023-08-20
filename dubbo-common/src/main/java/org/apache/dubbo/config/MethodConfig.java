@@ -35,6 +35,7 @@ import static org.apache.dubbo.config.Constants.ON_THROW_METHOD_KEY;
 /**
  * The method configuration
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-method/">...</a>
  * @export
  */
 public class MethodConfig extends AbstractMethodConfig {

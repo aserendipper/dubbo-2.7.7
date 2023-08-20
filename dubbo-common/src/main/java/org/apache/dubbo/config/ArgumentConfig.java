@@ -24,6 +24,7 @@ import java.io.Serializable;
 /**
  * The method arguments configuration
  *
+ * see <a href="https://cn.dubbo.apache.org/zh-cn/docsv2.7/user/references/xml/dubbo-argument/">...</a>
  * @export
  */
 public class ArgumentConfig implements Serializable {
