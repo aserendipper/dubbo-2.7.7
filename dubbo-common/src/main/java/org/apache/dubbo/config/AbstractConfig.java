@@ -58,11 +58,18 @@ public abstract class AbstractConfig implements Serializable {
 
     /**
      * The legacy properties container
+     * <p>
+     * 新旧配置映射
+     * key：新版本配置
+     * value：旧版本配置
      */
     private static final Map<String, String> LEGACY_PROPERTIES = new HashMap<String, String>();
 
     /**
      * The suffix container
+     * <p> 
+     * 配置类名的后缀
+     * 例如：ServiceConfig 后缀为 Config；ServiceBean 后缀为 Bean；ServiceConfigBase 后缀为 ConfigBase
      */
     private static final String[] SUFFIXES = new String[]{"Config", "Bean", "ConfigBase"};
 
@@ -79,12 +86,21 @@ public abstract class AbstractConfig implements Serializable {
 
     /**
      * The config id
+     * 
+     * 配置对象的编号
      */
     protected String id;
     protected String prefix;
 
     protected final AtomicBoolean refreshed = new AtomicBoolean(false);
 
+    /**
+     * 将键对应的值转换成目标的值
+     * 
+     * @param key
+     * @param value
+     * @return
+     */
     private static String convertLegacyValue(String key, String value) {
         if (value != null && value.length() > 0) {
             if ("dubbo.service.max.retry.providers".equals(key)) {
@@ -96,6 +112,13 @@ public abstract class AbstractConfig implements Serializable {
         return value;
     }
 
+    /**
+     * 获取类名对应的属性标签
+     * 例如ServiceConfig 对应为 Service
+     * 
+     * @param cls
+     * @return
+     */
     public static String getTagName(Class<?> cls) {
         String tag = cls.getSimpleName();
         for (String suffix : SUFFIXES) {
@@ -111,6 +134,13 @@ public abstract class AbstractConfig implements Serializable {
         appendParameters(parameters, config, null);
     }
 
+    /**
+     * 将配置对象的属性，添加到参数集合中
+     * 
+     * @param parameters 参数集合，该集合会用于URL.parameters
+     * @param config 配置对象
+     * @param prefix 属性前缀，用于配置项添加到parameters时的前缀
+     */
     @SuppressWarnings("unchecked")
     public static void appendParameters(Map<String, String> parameters, Object config, String prefix) {
         if (config == null) {
@@ -120,12 +150,14 @@ public abstract class AbstractConfig implements Serializable {
         for (Method method : methods) {
             try {
                 String name = method.getName();
+                // 判断是否是get方法
                 if (MethodUtils.isGetter(method)) {
                     Parameter parameter = method.getAnnotation(Parameter.class);
                     if (method.getReturnType() == Object.class || parameter != null && parameter.excluded()) {
                         continue;
                     }
                     String key;
+                    // 获取属性名
                     if (parameter != null && parameter.key().length() > 0) {
                         key = parameter.key();
                     } else {
@@ -133,7 +165,9 @@ public abstract class AbstractConfig implements Serializable {
                     }
                     Object value = method.invoke(config);
                     String str = String.valueOf(value).trim();
+                    // 获取属性值
                     if (value != null && str.length() > 0) {
+                        // 转义
                         if (parameter != null && parameter.escaped()) {
                             str = URL.encode(str);
                         }
@@ -165,6 +199,13 @@ public abstract class AbstractConfig implements Serializable {
         appendAttributes(parameters, config, null);
     }
 
+    /**
+     * 将带有@Parameter(attribute = true) 配置对象的属性，添加到参数集合中
+     * 
+     * @param parameters
+     * @param config
+     * @param prefix
+     */
     @Deprecated
     protected static void appendAttributes(Map<String, Object> parameters, Object config, String prefix) {
         if (config == null) {
@@ -199,6 +240,12 @@ public abstract class AbstractConfig implements Serializable {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param methodConfig
+     * @return
+     */
     protected static AsyncMethodInfo convertMethodConfig2AsyncInfo(MethodConfig methodConfig) {
         if (methodConfig == null || (methodConfig.getOninvoke() == null && methodConfig.getOnreturn() == null && methodConfig.getOnthrow() == null)) {
             return null;
@@ -237,6 +284,13 @@ public abstract class AbstractConfig implements Serializable {
         return asyncMethodInfo;
     }
 
+    /**
+     * 根据方法名获取方法
+     * 
+     * @param clazz
+     * @param methodName
+     * @return
+     */
     private static Method getMethodByName(Class<?> clazz, String methodName) {
         try {
             return ReflectUtils.findMethodByMethodName(clazz, methodName);
@@ -252,6 +306,14 @@ public abstract class AbstractConfig implements Serializable {
         }).collect(Collectors.toSet());
     }
 
+    /**
+     * 根据setter方法获取属性名
+     * 
+     * @param clazz
+     * @param setter
+     * @return
+     * @throws Exception
+     */
     private static String extractPropertyName(Class<?> clazz, Method setter) throws Exception {
         String propertyName = setter.getName().substring("set".length());
         Method getter = null;
@@ -488,6 +550,11 @@ public abstract class AbstractConfig implements Serializable {
         }
     }
 
+    /**
+     * 拼接成xml配置对象的字符串
+     * 
+     * @return
+     */
     @Override
     public String toString() {
         try {
