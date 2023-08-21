@@ -49,6 +49,8 @@ import static com.alibaba.spring.util.AnnotatedBeanDefinitionRegistryUtils.regis
  * DubboNamespaceHandler
  *
  * @export
+ * 
+ * dubbo-config-spring resources/META-INF/spring.handlers配置
  */
 public class DubboNamespaceHandler extends NamespaceHandlerSupport implements ConfigurableSourceBeanMetadataElement {
 
@@ -58,6 +60,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport implements Co
 
     @Override
     public void init() {
+        // 对应解析dubbo.xsd中的<dubbo:application>、<dubbo:module>、<dubbo:registry>、<dubbo:protocol>等标签
         registerBeanDefinitionParser("application", new DubboBeanDefinitionParser(ApplicationConfig.class, true));
         registerBeanDefinitionParser("module", new DubboBeanDefinitionParser(ModuleConfig.class, true));
         registerBeanDefinitionParser("registry", new DubboBeanDefinitionParser(RegistryConfig.class, true));
